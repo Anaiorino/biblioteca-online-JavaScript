@@ -30,7 +30,7 @@ routes.use(authMiddleware.execute);
 routes.get('/perfil', (req: any, res: any) => res.json({ id: req.user.id, role: req.user.role }));
 routes.get('/ranking', userController.obterRanking);
 routes.patch('/usuarios/senha', userController.alterarSenha);
-
+routes.put('/usuarios/:id', userController.atualizar);
 // Interações e Progresso (AGORA DENTRO DA PROTEÇÃO PARA IDENTIFICAR O USER)
 routes.post('/livros/progresso', interactionController.registrarProgresso);
 routes.get('/favoritos', interactionController.listarFavoritos);
