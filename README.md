@@ -1,4 +1,4 @@
-﻿# 📚 Gato Preto Library
+﻿# Gato Preto Library | Trabalho 4º semestre ADS
 
 Sistema Full Stack de biblioteca digital desenvolvido com foco em experiência do usuário, organização de código e funcionalidades modernas.
 
@@ -10,7 +10,7 @@ Sistema Full Stack de biblioteca digital desenvolvido com foco em experiência d
 
 ---
 
-## 🚀 Sobre o Projeto
+## Sobre o Projeto
 
 O **Gato Preto Library** é uma plataforma de biblioteca online onde usuários podem:
 
@@ -18,12 +18,11 @@ O **Gato Preto Library** é uma plataforma de biblioteca online onde usuários p
 - ❤️ Favoritar obras
 - ⭐ Avaliar livros
 - 💬 Comentar publicações
-- 🔖 Salvar página de leitura (bookmark)
 - ⏱️ Registrar tempo de leitura
 - 🏆 Participar de ranking de leitores
 - 👤 Gerenciar perfil pessoal
 
-O sistema possui autenticação, painel administrativo e interface moderna inspirada em bibliotecas premium.
+O sistema possui autenticação, painel administrativo e interface moderna inspirada em bibliotecas existentes.
 
 ---
 
@@ -81,11 +80,6 @@ O sistema possui autenticação, painel administrativo e interface moderna inspi
 - Criar comentários
 - Visualizar comentários
 
-## 🔖 Bookmark
-
-- Salva página onde o usuário parou
-- Retorno automático ao progresso
-
 ## 🏆 Ranking
 
 - Ranking por tempo total de leitura
@@ -96,10 +90,3 @@ O sistema possui autenticação, painel administrativo e interface moderna inspi
 - Editar livros
 - Excluir livros
 
----
-
-# 📂 Estrutura do Projeto
-
-```bash
-frontend-livraria/
-backend-livraria/
