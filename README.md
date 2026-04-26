@@ -1,4 +1,4 @@
-﻿# Gato Preto Library | Trabalho 4º semestre ADS
+﻿# Gato Preto Library | Trabalho 5º módulo ADS
 
 Sistema Full Stack de biblioteca digital desenvolvido com foco em experiência do usuário, organização de código e funcionalidades modernas.
 
