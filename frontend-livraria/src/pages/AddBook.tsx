@@ -13,6 +13,10 @@ export const AddBook: React.FC = () => {
   const [categorias, setCategorias] = useState<any[]>([]);
   const [capa, setCapa] = useState<File | null>(null);
   const [pdf, setPdf] = useState<File | null>(null);
+
+  // NOVO
+  const [pdfUrl, setPdfUrl] = useState('');
+
   const [menuAberto, setMenuAberto] = useState(false);
 
   const navigate = useNavigate();
@@ -30,139 +34,267 @@ export const AddBook: React.FC = () => {
         console.error("Erro ao carregar categorias:", error);
       }
     };
+
     carregarCategorias();
   }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const data = new FormData();
+
     data.append('titulo', titulo);
     data.append('autor', autor);
     data.append('categoriaId', categoriaId);
+
     if (capa) data.append('capa', capa);
-    if (pdf) data.append('pdf', pdf);
+
+    // PDF UPLOAD
+    if (pdf) {
+      data.append('pdf', pdf);
+    }
+
+    // LINK EXTERNO
+    if (pdfUrl.trim()) {
+      data.append('pdfUrl', pdfUrl);
+    }
 
     try {
       await api.post('/livros', data, {
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
-      toast.success("Nova obra catalogada com sucesso!");
+
+      toast.success('Nova obra catalogada com sucesso!');
       navigate('/home');
+
     } catch (error) {
-      toast.error("Erro ao catalogar obra. Verifique os campos.");
+      toast.error('Erro ao catalogar obra.');
     }
   };
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0a0a0a', color: '#fff' }}>
-      
-      {/* HEADER PADRONIZADO */}
-      <header style={{ 
-        position: 'fixed', top: 0, left: 0, width: '100%', height: '70px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-        padding: '0 40px', backgroundColor: 'rgba(0,0,0,0.98)', zIndex: 9999,
-        borderBottom: '1px solid #1a1a1a', boxSizing: 'border-box'
+
+      {/* HEADER */}
+      <header style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '70px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '0 40px',
+        backgroundColor: 'rgba(0,0,0,0.98)',
+        zIndex: 9999,
+        borderBottom: '1px solid #1a1a1a',
+        boxSizing: 'border-box'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => navigate('/home')}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+          onClick={() => navigate('/home')}
+        >
           <img src={logoGif} alt="Logo" style={{ width: '30px' }} />
-          <h1 className="fonte-antiga" style={{ fontSize: '18px', color: '#fff', margin: 0 }}>GATO PRETO</h1>
+          <h1 className="fonte-antiga" style={{ fontSize: '18px', margin: 0 }}>
+            GATO PRETO
+          </h1>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px', position: 'relative' }}>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ color: '#c5a677', fontWeight: 'bold', fontSize: '12px' }}>✨ {user.nome?.toUpperCase()}</div>
+          <div style={{ color: '#c5a677', fontWeight: 'bold', fontSize: '12px' }}>
+            ✨ {user.nome?.toUpperCase()}
           </div>
-          <button onClick={() => setMenuAberto(!menuAberto)} style={{ background: '#c5a677', border: 'none', color: '#000', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}>
+
+          <button
+            onClick={() => setMenuAberto(!menuAberto)}
+            style={{
+              background: '#c5a677',
+              border: 'none',
+              color: '#000',
+              padding: '8px 15px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
             {menuAberto ? 'FECHAR' : 'MENU'}
           </button>
 
           {menuAberto && (
-            <div style={{ position: 'absolute', top: '55px', right: '0', width: '200px', backgroundColor: '#111', border: '1px solid #c5a677', borderRadius: '4px', boxShadow: '0 10px 50px rgba(0,0,0,1)', zIndex: 10000, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              <button onClick={() => navigate('/home')} style={itemMenuStyle}>📚 BIBLIOTECA</button>
-              <button onClick={() => navigate('/dashboard')} style={itemMenuStyle}>📊 DASHBOARD</button>
-              <div style={{ height: '1px', background: '#333' }} />
-              <button onClick={() => {localStorage.clear(); navigate('/')}} style={{...itemMenuStyle, color: '#ff4d4d'}}>🚪 SAIR</button>
+            <div style={{
+              position: 'absolute',
+              top: '55px',
+              right: 0,
+              width: '200px',
+              backgroundColor: '#111',
+              border: '1px solid #c5a677',
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              <button onClick={() => navigate('/home')} style={itemMenuStyle}>
+                📚 BIBLIOTECA
+              </button>
+
+              <button onClick={() => navigate('/dashboard')} style={itemMenuStyle}>
+                📊 DASHBOARD
+              </button>
+
+              <button
+                onClick={() => {
+                  localStorage.clear();
+                  navigate('/');
+                }}
+                style={{ ...itemMenuStyle, color: '#ff4d4d' }}
+              >
+                🚪 SAIR
+              </button>
             </div>
           )}
         </div>
       </header>
 
-      {/* CONTEÚDO PRINCIPAL */}
-      <main style={{ padding: '120px 20px 60px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        
-        <div style={{ width: '100%', maxWidth: '600px', textAlign: 'center', marginBottom: '40px' }}>
-          <h2 className="fonte-antiga" style={{ fontSize: '32px', color: '#c5a677', margin: '0 0 10px' }}>NOVO MANUSCRITO</h2>
-          <p style={{ color: '#666', fontSize: '14px' }}>Adicione uma nova obra ao acervo eterno da biblioteca.</p>
-        </div>
+      {/* MAIN */}
+      <main style={{
+        padding: '120px 20px 60px',
+        display: 'flex',
+        justifyContent: 'center'
+      }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            width: '100%',
+            maxWidth: '650px',
+            backgroundColor: '#111',
+            padding: '40px',
+            borderRadius: '6px',
+            border: '1px solid #222',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '25px'
+          }}
+        >
+          <h2
+            className="fonte-antiga"
+            style={{
+              textAlign: 'center',
+              color: '#c5a677',
+              fontSize: '34px',
+              margin: 0
+            }}
+          >
+            NOVO MANUSCRITO
+          </h2>
 
-        <form onSubmit={handleSubmit} style={{ 
-          width: '100%', maxWidth: '600px', backgroundColor: '#111', padding: '40px', 
-          borderRadius: '4px', border: '1px solid #1a1a1a', display: 'flex', flexDirection: 'column', gap: '25px'
-        }}>
-          
+          {/* TITULO */}
           <div style={inputGroupStyle}>
-            <label style={labelStyle}>TÍTULO DA OBRA</label>
-            <input 
-              placeholder="Ex: O Corvo"
+            <label style={labelStyle}>TÍTULO</label>
+            <input
               value={titulo}
-              onChange={e => setTitulo(e.target.value)}
+              onChange={(e) => setTitulo(e.target.value)}
               style={inputStyle}
               required
             />
           </div>
 
+          {/* AUTOR */}
           <div style={inputGroupStyle}>
-            <label style={labelStyle}>AUTOR / ESCRIBA</label>
-            <input 
-              placeholder="Nome do autor"
+            <label style={labelStyle}>AUTOR</label>
+            <input
               value={autor}
-              onChange={e => setAutor(e.target.value)}
+              onChange={(e) => setAutor(e.target.value)}
               style={inputStyle}
               required
             />
           </div>
 
+          {/* CATEGORIA */}
           <div style={inputGroupStyle}>
-            <label style={labelStyle}>PRATELEIRA (CATEGORIA)</label>
-            <select 
+            <label style={labelStyle}>CATEGORIA</label>
+
+            <select
               value={categoriaId}
-              onChange={e => setCategoriaId(e.target.value)}
+              onChange={(e) => setCategoriaId(e.target.value)}
               style={inputStyle}
               required
             >
-              <option value="">Selecione uma seção...</option>
-              {categorias.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.nome.toUpperCase()}</option>
+              <option value="">Selecione</option>
+
+              {categorias.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.nome}
+                </option>
               ))}
             </select>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>CAPA (IMAGEM)</label>
-              <input type="file" accept="image/*" onChange={e => setCapa(e.target.files ? e.target.files[0] : null)} style={fileInputStyle} />
-            </div>
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>MANUSCRITO (PDF)</label>
-              <input type="file" accept="application/pdf" onChange={e => setPdf(e.target.files ? e.target.files[0] : null)} style={fileInputStyle} />
-            </div>
+          {/* CAPA */}
+          <div style={inputGroupStyle}>
+            <label style={labelStyle}>CAPA</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setCapa(e.target.files ? e.target.files[0] : null)
+              }
+              style={fileInputStyle}
+            />
           </div>
 
-          <button type="submit" style={{ 
-            backgroundColor: '#c5a677', color: '#000', padding: '15px', border: 'none', 
-            borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px',
-            fontSize: '14px', letterSpacing: '2px'
-          }}>
+          {/* PDF */}
+          <div style={inputGroupStyle}>
+            <label style={labelStyle}>UPLOAD PDF</label>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(e) =>
+                setPdf(e.target.files ? e.target.files[0] : null)
+              }
+              style={fileInputStyle}
+            />
+          </div>
+
+          {/* LINK */}
+          <div style={inputGroupStyle}>
+            <label style={labelStyle}>OU LINK DO LIVRO</label>
+            <input
+              type="url"
+              placeholder="https://..."
+              value={pdfUrl}
+              onChange={(e) => setPdfUrl(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+
+          <button
+            type="submit"
+            style={{
+              backgroundColor: '#c5a677',
+              color: '#000',
+              border: 'none',
+              padding: '14px',
+              borderRadius: '4px',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}
+          >
             CATALOGAR OBRA
           </button>
 
-          <button type="button" onClick={() => navigate('/home')} style={{ 
-            backgroundColor: 'transparent', color: '#666', border: 'none', cursor: 'pointer', fontSize: '12px'
-          }}>
-            CANCELAR E VOLTAR
+          <button
+            type="button"
+            onClick={() => navigate('/home')}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#666',
+              cursor: 'pointer'
+            }}
+          >
+            CANCELAR
           </button>
         </form>
       </main>
@@ -170,9 +302,40 @@ export const AddBook: React.FC = () => {
   );
 };
 
-// ESTILOS AUXILIARES
-const inputGroupStyle = { display: 'flex', flexDirection: 'column' as 'column', gap: '8px' };
-const labelStyle = { fontSize: '11px', color: '#c5a677', fontWeight: 'bold', letterSpacing: '1px' };
-const inputStyle = { padding: '12px', backgroundColor: '#0a0a0a', border: '1px solid #333', color: '#fff', borderRadius: '4px', outline: 'none' };
-const fileInputStyle = { fontSize: '10px', color: '#666', marginTop: '5px' };
-const itemMenuStyle = { width: '100%', padding: '15px', background: 'none', border: 'none', color: '#fff', textAlign: 'left' as 'left', cursor: 'pointer', fontSize: '13px', borderBottom: '1px solid #222' };
+// ESTILOS
+const inputGroupStyle = {
+  display: 'flex',
+  flexDirection: 'column' as 'column',
+  gap: '8px'
+};
+
+const labelStyle = {
+  fontSize: '12px',
+  color: '#c5a677',
+  fontWeight: 'bold'
+};
+
+const inputStyle = {
+  padding: '12px',
+  backgroundColor: '#0a0a0a',
+  border: '1px solid #333',
+  color: '#fff',
+  borderRadius: '4px',
+  outline: 'none'
+};
+
+const fileInputStyle = {
+  fontSize: '12px',
+  color: '#999'
+};
+
+const itemMenuStyle = {
+  width: '100%',
+  padding: '14px',
+  background: 'none',
+  border: 'none',
+  color: '#fff',
+  textAlign: 'left' as 'left',
+  cursor: 'pointer',
+  borderBottom: '1px solid #222'
+};

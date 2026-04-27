@@ -74,7 +74,7 @@ model Comentario {
   livroId   String
 }
 
-// NOVO MODELO: Para o Tempo de Sabedoria
+// Para o Tempo de Sabedoria
 model Leitura {
   id                Int      @id @default(autoincrement())
   tempoLido         Int      @default(0) // Armazena minutos
