@@ -17,7 +17,6 @@
       "*": ["node_modules/*"]
     },
 
-    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "prisma"]
