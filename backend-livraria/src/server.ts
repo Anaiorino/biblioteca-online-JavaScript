@@ -16,8 +16,9 @@ app.use(routes);
 // EXPORTAÇÃO PARA OS TESTES
 export { app };
 
-// INICIALIZAÇÃO DO SERVIDOR
-const PORT = 3333;
-app.listen(PORT, () => {
-  console.log(`🚀 Gato Preto online em http://localhost:${PORT}`);
+// INICIALIZAÇÃO 
+const port = process.env.PORT || 3333;
+
+app.listen(port, () => {
+  console.log(`🚀 Gato Preto online na porta ${port}`);
 });
